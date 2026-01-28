@@ -1,8 +1,7 @@
-
 {
   "name": "Umfrage PWA - Willst du Verbesserung?",
   "short_name": "Umfrage",
-  "description": "Echtzeit-Umfrage mit Live-Ergebnissen",
+  "description": "Echtzeit-Umfrage mit Live-Ergebnissen via GitHub Pages",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1e3c72",
