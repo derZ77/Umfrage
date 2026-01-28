@@ -7,6 +7,9 @@
     <meta name="theme-color" content="#1e3c72">
     <meta name="description" content="Echtzeit-Umfrage PWA - Willst du Verbesserung?">
     
+    <!-- Wichtig für GitHub Pages: Basis-URL setzen -->
+    <base href="./">
+    
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     
@@ -25,11 +28,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -68,15 +67,8 @@
             transition: all 0.3s ease;
         }
 
-        .connection-status.online {
-            background: #28a745;
-            color: white;
-        }
-
-        .connection-status.offline {
-            background: #dc3545;
-            color: white;
-        }
+        .connection-status.online { background: #28a745; color: white; }
+        .connection-status.offline { background: #dc3545; color: white; }
 
         h1 {
             color: #333;
@@ -103,16 +95,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-
-        .sync-info.syncing::before {
-            content: "🔄";
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
 
         .question-section {
@@ -151,29 +133,21 @@
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
 
-        .option-label:hover {
-            transform: translateX(5px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        }
-
+        .option-label:hover { transform: translateX(5px); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); }
         .option-label.ja:hover { border-color: #28a745; }
         .option-label.ja.selected {
             border-color: #28a745;
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
         }
-
         .option-label.nein:hover { border-color: #dc3545; }
         .option-label.nein.selected {
             border-color: #dc3545;
             background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
             color: white;
         }
-
         .option-label.selected .option-text { color: white; }
 
         input[type="radio"] { display: none; }
@@ -319,12 +293,6 @@
             box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
         }
 
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
         .reset-btn {
             opacity: 0;
             transform: scale(0.9);
@@ -380,10 +348,24 @@
             50% { opacity: 0.5; }
         }
 
+        .github-info {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: #586069;
+        }
+
+        .github-info strong {
+            color: #24292e;
+        }
+
         @media print {
             body { background: white; padding: 0; }
             .container { box-shadow: none; max-width: 100%; padding: 20px; }
-            .question-section, .button-group, .success-message, .error-message, .connection-status, .sync-info { display: none !important; }
+            .question-section, .button-group, .success-message, .error-message, .connection-status, .sync-info, .github-info { display: none !important; }
             .chart-section { opacity: 1 !important; transform: none !important; page-break-inside: avoid; }
             .chart-title::before {
                 content: "Umfrageergebnis: Willst du Verbesserung?";
@@ -419,23 +401,22 @@
     </style>
 </head>
 <body>
-    <div class="connection-status online" id="connectionStatus">
-        🟢 Online
-    </div>
+    <div class="connection-status online" id="connectionStatus">🟢 Online</div>
 
     <div class="success-message" id="successMessage">✓ Antwort gespeichert!</div>
     <div class="error-message" id="errorMessage">⚠ Fehler!</div>
 
     <div class="container">
         <h1>🎯 Willst du Verbesserung?</h1>
-        <p class="subtitle">
-            Echtzeit-Umfrage 
-            <span class="live-indicator">LIVE</span>
-        </p>
+        <p class="subtitle">Echtzeit-Umfrage <span class="live-indicator">LIVE</span></p>
         
-        <div class="sync-info" id="syncInfo">
-            🔄 Verbinde mit Firebase...
+        <div class="github-info">
+            <strong>ℹ️ GitHub Pages Version</strong><br>
+            Diese App läuft auf GitHub Pages mit Firebase Realtime Database. 
+            Alle Änderungen werden sofort für alle Nutzer synchronisiert.
         </div>
+        
+        <div class="sync-info" id="syncInfo">🔄 Verbinde mit Firebase...</div>
 
         <div class="question-section">
             <div class="question-title">Was ist deine Entscheidung?</div>
@@ -478,28 +459,20 @@
             <div class="print-info">
                 <strong>Ausgedruckt am:</strong> <span id="printDate"></span><br>
                 Umfrage: "Willst du Verbesserung?"<br>
-                <small>Echtzeit-Umfrage mit Firebase</small>
+                <small>Gehostet auf GitHub Pages mit Firebase</small>
             </div>
         </div>
 
         <div class="button-group">
-            <button class="btn btn-primary reset-btn" id="resetBtn" onclick="resetVote()">
-                🔄 Neue Abstimmung
-            </button>
-            
-            <button class="btn btn-success" id="printBtn" onclick="printResults()">
-                🖨️ Ergebnis drucken
-            </button>
-            
-            <button class="btn btn-danger" id="restartBtn" onclick="restartSurvey()">
-                ⚠️ Umfrage zurücksetzen
-            </button>
+            <button class="btn btn-primary reset-btn" id="resetBtn" onclick="resetVote()">🔄 Neue Abstimmung</button>
+            <button class="btn btn-success" id="printBtn" onclick="printResults()">🖨️ Ergebnis drucken</button>
+            <button class="btn btn-danger" id="restartBtn" onclick="restartSurvey()">⚠️ Umfrage zurücksetzen</button>
         </div>
     </div>
 
     <script>
         // ===================== FIREBASE KONFIGURATION =====================
-        // HIER DEINE FIREBASE CONFIG EINFÜGEN (siehe Setup-Anleitung)
+        // HIER DEINE FIREBASE CONFIG EINFÜGEN!
         const firebaseConfig = {
             apiKey: "DEIN_API_KEY",
             authDomain: "DEIN_PROJECT_ID.firebaseapp.com",
@@ -539,7 +512,7 @@
                 isConnected = false;
                 statusEl.textContent = '🔴 Offline';
                 statusEl.className = 'connection-status offline';
-                syncInfo.innerHTML = '⚠️ Offline-Modus. Stimmen werden lokal gespeichert und später synchronisiert.';
+                syncInfo.innerHTML = '⚠️ Offline-Modus. Änderungen werden lokal gespeichert.';
                 syncInfo.style.background = '#ffebee';
                 syncInfo.style.borderLeftColor = '#f44336';
                 syncInfo.style.color = '#c62828';
@@ -547,21 +520,18 @@
         });
 
         // ===================== ECHTZEIT-DATEN =====================
-        // Listener für Änderungen an den Stimmen
         votesRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 votes.A = data.A || 0;
                 votes.B = data.B || 0;
             } else {
-                // Initialisieren wenn keine Daten vorhanden
                 votesRef.set({ A: 0, B: 0 });
             }
-            
             updateUI();
         });
 
-        // ===================== CHART INITIALISIERUNG =====================
+        // ===================== CHART =====================
         function initChart() {
             const ctx = document.getElementById('myChart').getContext('2d');
             
@@ -571,14 +541,8 @@
                     labels: ['Ja, dafür kämpfe ich!', 'Nein, Verschlechterung'],
                     datasets: [{
                         data: [votes.A, votes.B],
-                        backgroundColor: [
-                            'rgba(40, 167, 69, 0.8)',
-                            'rgba(220, 53, 69, 0.8)'
-                        ],
-                        borderColor: [
-                            'rgba(40, 167, 69, 1)',
-                            'rgba(220, 53, 69, 1)'
-                        ],
+                        backgroundColor: ['rgba(40, 167, 69, 0.8)', 'rgba(220, 53, 69, 0.8)'],
+                        borderColor: ['rgba(40, 167, 69, 1)', 'rgba(220, 53, 69, 1)'],
                         borderWidth: 3,
                         hoverOffset: 15
                     }]
@@ -625,12 +589,10 @@
 
         // ===================== UI UPDATES =====================
         function updateUI() {
-            // Statistiken aktualisieren
             document.getElementById('countA').textContent = votes.A;
             document.getElementById('countB').textContent = votes.B;
             document.getElementById('totalVotes').textContent = votes.A + votes.B;
             
-            // Chart aktualisieren
             if (myChart) {
                 myChart.data.datasets[0].data = [votes.A, votes.B];
                 myChart.update();
@@ -646,7 +608,6 @@
                 return;
             }
 
-            // Visuelles Feedback
             document.querySelectorAll('.option-label').forEach(label => {
                 label.classList.remove('selected');
             });
@@ -659,7 +620,6 @@
                 document.getElementById('optionB').checked = true;
             }
 
-            // In Firebase speichern (atomare Operation)
             const voteRef = votesRef.child(option);
             voteRef.transaction((currentValue) => {
                 return (currentValue || 0) + 1;
