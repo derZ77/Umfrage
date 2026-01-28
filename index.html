@@ -472,15 +472,24 @@
     <script>
         // ===================== FIREBASE KONFIGURATION =====================
         // HIER DEINE FIREBASE CONFIG EINFÜGEN!
-        const firebaseConfig = {
-            apiKey: "DEIN_API_KEY",
-            authDomain: "DEIN_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://umfrage-v-default-rtdb.europe-west1.firebasedatabase.app/",
-            projectId: "DEIN_PROJECT_ID",
-            storageBucket: "DEIN_PROJECT_ID.appspot.com",
-            messagingSenderId: "DEINE_SENDER_ID",
-            appId: "DEINE_APP_ID"
-        };
+       // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAMl10gbCF6hJo_6MLsZCklDyW65JRsA3U",
+  authDomain: "umfrage-v.firebaseapp.com",
+  databaseURL: "https://umfrage-v-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "umfrage-v",
+  storageBucket: "umfrage-v.firebasestorage.app",
+  messagingSenderId: "627465595495",
+  appId: "1:627465595495:web:151f440d8355e57e2402c2"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
         // Firebase initialisieren
         firebase.initializeApp(firebaseConfig);
