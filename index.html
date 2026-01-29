@@ -602,35 +602,36 @@
 
         // ===================== ABSTIMMUNG =====================
 console.log('selectOption aufgerufen:', option, new Date().toISOString());
-        function selectOption(option) {
-            if (hasVoted) {
-                showError('Du hast bereits abgestimmt! Klicke auf "Neue Abstimmung" um erneut zu wählen.');
-                return;
-            }
+      function selectOption(option) {
+    if (hasVoted) {
+        showError('Du hast bereits abgestimmt! Klicke auf "Neue Abstimmung" um erneut zu wählen.');
+        return;
+    }
+    hasVoted = true; // direkt hier setzen, bevor die Transaktion läuft
 
-            document.querySelectorAll('.option-label').forEach(label => {
-                label.classList.remove('selected');
-            });
+    document.querySelectorAll('.option-label').forEach(label => {
+        label.classList.remove('selected');
+    });
 
-            if (option === 'A') {
-                document.getElementById('optionA').parentElement.classList.add('selected');
-                document.getElementById('optionA').checked = true;
-            } else {
-                document.getElementById('optionB').parentElement.classList.add('selected');
-                document.getElementById('optionB').checked = true;
-            }
+    if (option === 'A') {
+        document.getElementById('optionA').parentElement.classList.add('selected');
+        document.getElementById('optionA').checked = true;
+    } else {
+        document.getElementById('optionB').parentElement.classList.add('selected');
+        document.getElementById('optionB').checked = true;
+    }
 
-            const voteRef = votesRef.child(option);
-            voteRef.transaction((currentValue) => {
-                return (currentValue || 0) + 1;
-            }).then(() => {
-                hasVoted = true;
-                showSuccess();
-                document.getElementById('resetBtn').classList.add('visible');
-            }).catch((error) => {
-                showError('Fehler beim Speichern: ' + error.message);
-            });
-        }
+    const voteRef = votesRef.child(option);
+    voteRef.transaction((currentValue) => {
+        return (currentValue || 0) + 1;
+    }).then(() => {
+        showSuccess();
+        document.getElementById('resetBtn').classList.add('visible');
+    }).catch((error) => {
+        hasVoted = false; // bei Fehler wieder freigeben
+        showError('Fehler beim Speichern: ' + error.message);
+    });
+}
 
         // ===================== BUTTON FUNKTIONEN =====================
         function resetVote() {
